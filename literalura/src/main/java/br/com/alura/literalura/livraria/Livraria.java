@@ -1,6 +1,7 @@
 package br.com.alura.literalura.livraria;
 
 import br.com.alura.literalura.model.ApiResponse;
+import br.com.alura.literalura.model.Autor;
 import br.com.alura.literalura.model.Livro;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -12,9 +13,11 @@ import java.util.ArrayList;
 import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
+import java.util.stream.Collectors;
 
 public class Livraria {
     private List<Livro> catalogo = new ArrayList<>();
+    private List<Autor> autores = new ArrayList<>();
 
     public void buscarLivroPorTitulo(String titulo) {
         try {
@@ -27,6 +30,9 @@ public class Livraria {
             } else {
                 Livro livro = response.getResults().get(0);
                 catalogo.add(livro);
+                if (!livro.getAutores().isEmpty()) {
+                    autores.add(livro.getAutores().get(0));  // Apenas o primeiro autor
+                }
                 exibirLivro(livro);
             }
         } catch (IOException e) {
@@ -45,17 +51,37 @@ public class Livraria {
     }
 
     public void listarLivrosPorIdioma(String idioma) {
-        List<Livro> livrosFiltrados = new ArrayList<>();
-        for (Livro livro : catalogo) {
-            if (!livro.getLanguages().isEmpty() && livro.getLanguages().get(0).equalsIgnoreCase(idioma)) {
-                livrosFiltrados.add(livro);
-            }
-        }
+        List<Livro> livrosFiltrados = catalogo.stream()
+                .filter(livro -> !livro.getLanguages().isEmpty() && livro.getLanguages().get(0).equalsIgnoreCase(idioma))
+                .collect(Collectors.toList());
         if (livrosFiltrados.isEmpty()) {
             System.out.println("Nenhum livro encontrado no idioma: " + idioma);
         } else {
             for (Livro livro : livrosFiltrados) {
                 exibirLivro(livro);
+            }
+        }
+    }
+
+    public void listarTodosAutores() {
+        if (autores.isEmpty()) {
+            System.out.println("Nenhum autor encontrado no catálogo.");
+        } else {
+            for (Autor autor : autores) {
+                System.out.println(autor);
+            }
+        }
+    }
+
+    public void listarAutoresVivosEmAno(int ano) {
+        List<Autor> autoresVivos = autores.stream()
+                .filter(autor -> autor.getBirthYear() <= ano && (autor.getDeathYear() == null || autor.getDeathYear() >= ano))
+                .collect(Collectors.toList());
+        if (autoresVivos.isEmpty()) {
+            System.out.println("Nenhum autor encontrado vivo no ano: " + ano);
+        } else {
+            for (Autor autor : autoresVivos) {
+                System.out.println(autor);
             }
         }
     }
@@ -77,7 +103,9 @@ public class Livraria {
             System.out.println("1. Buscar livro por título");
             System.out.println("2. Listar todos os livros");
             System.out.println("3. Listar livros por idioma");
-            System.out.println("4. Sair");
+            System.out.println("4. Listar todos os autores");
+            System.out.println("5. Listar autores vivos em determinado ano");
+            System.out.println("6. Sair");
             System.out.print("Opção: ");
 
             try {
@@ -99,6 +127,14 @@ public class Livraria {
                         listarLivrosPorIdioma(idioma);
                         break;
                     case 4:
+                        listarTodosAutores();
+                        break;
+                    case 5:
+                        System.out.print("Digite o ano: ");
+                        int ano = scanner.nextInt();
+                        listarAutoresVivosEmAno(ano);
+                        break;
+                    case 6:
                         System.out.println("Saindo...");
                         scanner.close();
                         return;
