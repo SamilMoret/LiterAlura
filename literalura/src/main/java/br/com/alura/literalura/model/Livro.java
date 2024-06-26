@@ -1,56 +1,67 @@
 package br.com.alura.literalura.model;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.List;
 
-@JsonIgnoreProperties(ignoreUnknown = true) // Isso garante que campos desconhecidos sejam ignorados
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Livro {
-    private String title;
-    private Integer id;
-    private List<Autor> authors;
-    private List<String> subjects; // Adicionando o campo subjects
-    private List<String> translators;
+    @JsonAlias({"title", "titulo"})
+    private String titulo;
+
+    @JsonAlias({"authors", "autores"})
+    private List<Autor> autores;
+
+    @JsonAlias({"translators", "tradutores"})
+    private List<Autor> tradutores;
+
+    @JsonAlias({"id", "identificador"})
+    private Long id;
 
     // Getters e Setters
-    public String getTitle() {
-        return title;
+
+    public String getTitulo() {
+        return titulo;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
+    public void setTitulo(String titulo) {
+        this.titulo = titulo;
     }
 
-    public Integer getId() {
+    public List<Autor> getAutores() {
+        return autores;
+    }
+
+    public void setAutores(List<Autor> autores) {
+        this.autores = autores;
+    }
+
+    public List<Autor> getTradutores() {
+        return tradutores;
+    }
+
+    public void setTradutores(List<Autor> tradutores) {
+        this.tradutores = tradutores;
+    }
+
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
-    public List<Autor> getAuthors() {
-        return authors;
-    }
-
-    public void setAuthors(List<Autor> authors) {
-        this.authors = authors;
-    }
-
-    public List<String> getSubjects() {
-        return subjects;
-    }
-
-    public void setSubjects(List<String> subjects) {
-        this.subjects = subjects;
-    }
-
-    public List<String> getTranslators() {
-        return translators;
-    }
-
-    public void setTranslators(List<String> translators) {
-        this.translators = translators;
+    // toString para exibição dos dados
+    @Override
+    public String toString() {
+        return "Livro{" +
+                "titulo='" + titulo + '\'' +
+                ", autores=" + autores +
+                ", tradutores=" + tradutores +
+                ", id=" + id +
+                '}';
     }
 }

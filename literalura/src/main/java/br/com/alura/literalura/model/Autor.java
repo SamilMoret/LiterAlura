@@ -33,5 +33,10 @@ public class Autor {
     public void setDeathYear(Integer deathYear) {
         this.deathYear = deathYear;
     }
-}
 
+    // Modificação para retornar o nome do autor no método toString()
+    @Override
+    public String toString() {
+        return name;
+    }
+}
