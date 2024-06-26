@@ -2,7 +2,6 @@ package br.com.alura.literalura.model;
 
 import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.List;
 
@@ -19,6 +18,12 @@ public class Livro {
 
     @JsonAlias({"id", "identificador"})
     private Long id;
+
+    @JsonAlias("languages")
+    private List<String> languages;
+
+    @JsonAlias("download_count")
+    private int downloadCount;
 
     // Getters e Setters
 
@@ -54,7 +59,22 @@ public class Livro {
         this.id = id;
     }
 
-    // toString para exibição dos dados
+    public List<String> getLanguages() {
+        return languages;
+    }
+
+    public void setLanguages(List<String> languages) {
+        this.languages = languages;
+    }
+
+    public int getDownloadCount() {
+        return downloadCount;
+    }
+
+    public void setDownloadCount(int downloadCount) {
+        this.downloadCount = downloadCount;
+    }
+
     @Override
     public String toString() {
         return "Livro{" +
@@ -62,6 +82,8 @@ public class Livro {
                 ", autores=" + autores +
                 ", tradutores=" + tradutores +
                 ", id=" + id +
+                ", languages=" + languages +
+                ", downloadCount=" + downloadCount +
                 '}';
     }
 }
