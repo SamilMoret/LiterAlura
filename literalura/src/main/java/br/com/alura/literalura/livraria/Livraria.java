@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.Scanner;
 
 public class Livraria {
 
@@ -28,8 +29,32 @@ public class Livraria {
                 System.out.println();
             }
         } catch (IOException e) {
-
             e.printStackTrace();
+        }
+    }
+
+    public void exibirMenu() {
+        Scanner scanner = new Scanner(System.in);
+        while (true) {
+            System.out.println("Bem-vindo à LiterAlura!");
+            System.out.println("Selecione uma opção:");
+            System.out.println("1. Consultar livros");
+            System.out.println("2. Sair");
+            System.out.print("Opção: ");
+            int opcao = scanner.nextInt();
+            scanner.nextLine(); // Consome a nova linha
+
+            switch (opcao) {
+                case 1:
+                    consumo();
+                    break;
+                case 2:
+                    System.out.println("Saindo...");
+                    scanner.close();
+                    return;
+                default:
+                    System.out.println("Opção inválida! Tente novamente.");
+            }
         }
     }
 }

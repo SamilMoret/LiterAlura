@@ -12,11 +12,9 @@ public class LiteraluraApplication implements CommandLineRunner {
 		SpringApplication.run(LiteraluraApplication.class, args);
 	}
 
-
 	@Override
-	public void run (String... args) throws Exception {
+	public void run(String... args) throws Exception {
 		Livraria livraria = new Livraria();
-		livraria.consumo();
+		livraria.exibirMenu();
 	}
 }
-
