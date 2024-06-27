@@ -1,32 +1,49 @@
 package br.com.alura.literalura.model;
 
-import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.persistence.*;
+
 
 import java.util.List;
 
+@Entity
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Livro {
-    @JsonAlias({"title", "titulo"})
-    private String titulo;
 
-    @JsonAlias({"authors", "autores"})
-    private List<Autor> autores;
-
-    @JsonAlias({"translators", "tradutores"})
-    private List<Autor> tradutores;
-
-    @JsonAlias({"languages", "idiomas"})
-    private List<String> languages;
-
-    @JsonAlias({"download_count", "numero_downloads"})
-    private int downloadCount;
-
-    @JsonAlias({"id", "identificador"})
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @JsonProperty("title")
+    private String titulo;
+
+    @JsonProperty("authors")
+    @OneToMany(cascade = CascadeType.ALL)
+    private List<Autor> autores;
+
+    @JsonProperty("languages")
+    @ElementCollection
+    private List<String> languages;
+
+    @JsonProperty("download_count")
+    private Integer downloadCount;
+
+    @JsonProperty("translators")
+    @Transient // Para ignorar no mapeamento JPA, se não for necessário persistir
+    private List<Autor> translators;
+
+    @ManyToOne
+    private Autor autor;
+
     // Getters e Setters
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     public String getTitulo() {
         return titulo;
@@ -44,14 +61,6 @@ public class Livro {
         this.autores = autores;
     }
 
-    public List<Autor> getTradutores() {
-        return tradutores;
-    }
-
-    public void setTradutores(List<Autor> tradutores) {
-        this.tradutores = tradutores;
-    }
-
     public List<String> getLanguages() {
         return languages;
     }
@@ -60,32 +69,39 @@ public class Livro {
         this.languages = languages;
     }
 
-    public int getDownloadCount() {
+    public Integer getDownloadCount() {
         return downloadCount;
     }
 
-    public void setDownloadCount(int downloadCount) {
+    public void setDownloadCount(Integer downloadCount) {
         this.downloadCount = downloadCount;
     }
 
-    public Long getId() {
-        return id;
+    public List<Autor> getTranslators() {
+        return translators;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setTranslators(List<Autor> translators) {
+        this.translators = translators;
     }
 
-    // toString para exibição dos dados
+    public Autor getAutor() {
+        return autor;
+    }
+
+    public void setAutor(Autor autor) {
+        this.autor = autor;
+    }
+
     @Override
     public String toString() {
         return "Livro{" +
-                "titulo='" + titulo + '\'' +
+                "id=" + id +
+                ", titulo='" + titulo + '\'' +
                 ", autores=" + autores +
-                ", tradutores=" + tradutores +
-                ", idiomas=" + languages +
-                ", número de downloads=" + downloadCount +
-                ", id=" + id +
+                ", languages=" + languages +
+                ", downloadCount=" + downloadCount +
+                ", autor=" + autor +
                 '}';
     }
 }

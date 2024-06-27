@@ -3,7 +3,11 @@ package br.com.alura.literalura.livraria;
 import br.com.alura.literalura.model.ApiResponse;
 import br.com.alura.literalura.model.Autor;
 import br.com.alura.literalura.model.Livro;
+import br.com.alura.literalura.repository.AutorRepository;
+import br.com.alura.literalura.repository.LivroRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.net.URL;
@@ -15,25 +19,37 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.stream.Collectors;
 
+
+@Component
 public class Livraria {
     private List<Livro> catalogo = new ArrayList<>();
     private List<Autor> autores = new ArrayList<>();
 
+    @Autowired
+    private LivroRepository livroRepository;
+
+    @Autowired
+    private AutorRepository autorRepository;
+
     public void buscarLivroPorTitulo(String titulo) {
         try {
             ObjectMapper mapper = new ObjectMapper();
-            String encodedTitulo = URLEncoder.encode(titulo, StandardCharsets.UTF_8.toString());
-            String apiUrl = "https://gutendex.com/books/?search=" + encodedTitulo;
+            String apiUrl = "https://gutendex.com/books/?search=" + URLEncoder.encode(titulo, StandardCharsets.UTF_8);
             ApiResponse response = mapper.readValue(new URL(apiUrl), ApiResponse.class);
-            if (response.getResults().isEmpty()) {
-                System.out.println("Nenhum livro encontrado com o título: " + titulo);
-            } else {
+
+            if (!response.getResults().isEmpty()) {
                 Livro livro = response.getResults().get(0);
-                catalogo.add(livro);
-                if (!livro.getAutores().isEmpty()) {
-                    autores.add(livro.getAutores().get(0));  // Apenas o primeiro autor
+                List<Autor> autores = livro.getAutores();
+                if (!autores.isEmpty()) {
+                    Autor autor = autores.get(0);
+                    Autor autorSalvo = autorRepository.save(autor);
+                    livro.setAutor(autorSalvo);
                 }
-                exibirLivro(livro);
+
+                livroRepository.save(livro);
+                System.out.println("Livro salvo com sucesso: " + livro);
+            } else {
+                System.out.println("Nenhum livro encontrado com o título: " + titulo);
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -41,17 +57,22 @@ public class Livraria {
     }
 
     public void listarTodosLivros() {
-        if (catalogo.isEmpty()) {
+        List<Livro> livros = livroRepository.findAll();
+
+        if (livros.isEmpty()) {
             System.out.println("Nenhum livro encontrado no catálogo.");
         } else {
-            for (Livro livro : catalogo) {
+            for (Livro livro : livros) {
+                // Força o carregamento dos idiomas antes de exibir o livro
+                livro.getLanguages().size();
                 exibirLivro(livro);
             }
         }
     }
 
+
     public void listarLivrosPorIdioma(String idioma) {
-        List<Livro> livrosFiltrados = catalogo.stream()
+        List<Livro> livrosFiltrados = livroRepository.findAll().stream()
                 .filter(livro -> !livro.getLanguages().isEmpty() && livro.getLanguages().get(0).equalsIgnoreCase(idioma))
                 .collect(Collectors.toList());
         if (livrosFiltrados.isEmpty()) {
@@ -63,7 +84,9 @@ public class Livraria {
         }
     }
 
+
     public void listarTodosAutores() {
+        List<Autor> autores = autorRepository.findAll();
         if (autores.isEmpty()) {
             System.out.println("Nenhum autor encontrado no catálogo.");
         } else {
@@ -74,7 +97,7 @@ public class Livraria {
     }
 
     public void listarAutoresVivosEmAno(int ano) {
-        List<Autor> autoresVivos = autores.stream()
+        List<Autor> autoresVivos = autorRepository.findAll().stream()
                 .filter(autor -> autor.getBirthYear() <= ano && (autor.getDeathYear() == null || autor.getDeathYear() >= ano))
                 .collect(Collectors.toList());
         if (autoresVivos.isEmpty()) {
@@ -88,7 +111,7 @@ public class Livraria {
 
     private void exibirLivro(Livro livro) {
         System.out.println("Título: " + livro.getTitulo());
-        System.out.println("Autores: " + livro.getAutores());
+        System.out.println("Autor: " + livro.getAutor().getName());
         System.out.println("Idiomas: " + livro.getLanguages());
         System.out.println("Número de Downloads: " + livro.getDownloadCount());
         System.out.println("ID: " + livro.getId());
