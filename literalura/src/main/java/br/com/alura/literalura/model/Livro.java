@@ -4,8 +4,8 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 
-
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -23,8 +23,10 @@ public class Livro {
     private List<Autor> autores;
 
     @JsonProperty("languages")
-    @ElementCollection
-    private List<String> languages;
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(name = "livro_languages", joinColumns = @JoinColumn(name = "livro_id"))
+    @Column(name = "languages") // Use the existing column "languages"
+    private Set<String> languages;
 
     @JsonProperty("download_count")
     private Integer downloadCount;
@@ -61,11 +63,11 @@ public class Livro {
         this.autores = autores;
     }
 
-    public List<String> getLanguages() {
+    public Set<String> getLanguages() {
         return languages;
     }
 
-    public void setLanguages(List<String> languages) {
+    public void setLanguages(Set<String> languages) {
         this.languages = languages;
     }
 

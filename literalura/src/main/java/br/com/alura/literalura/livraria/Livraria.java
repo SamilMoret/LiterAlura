@@ -73,8 +73,9 @@ public class Livraria {
 
     public void listarLivrosPorIdioma(String idioma) {
         List<Livro> livrosFiltrados = livroRepository.findAll().stream()
-                .filter(livro -> !livro.getLanguages().isEmpty() && livro.getLanguages().get(0).equalsIgnoreCase(idioma))
+                .filter(livro -> livro.getLanguages() != null && livro.getLanguages().contains(idioma))
                 .collect(Collectors.toList());
+
         if (livrosFiltrados.isEmpty()) {
             System.out.println("Nenhum livro encontrado no idioma: " + idioma);
         } else {
@@ -118,6 +119,14 @@ public class Livraria {
         System.out.println();
     }
 
+    public void exibirQuantidadeDeLivrosPorIdioma() {
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Digite o idioma (pt, es, fr): ");
+        String idioma = scanner.nextLine();
+        long quantidade = livroRepository.countByLanguagesContains(idioma);
+        System.out.println("Quantidade de livros em " + idioma + ": " + quantidade);
+    }
+
     public void exibirMenu() {
         Scanner scanner = new Scanner(System.in);
         while (true) {
@@ -128,7 +137,8 @@ public class Livraria {
             System.out.println("3. Listar livros por idioma");
             System.out.println("4. Listar todos os autores");
             System.out.println("5. Listar autores vivos em determinado ano");
-            System.out.println("6. Sair");
+            System.out.println("6. Exibir quantidade de livros por idioma");
+            System.out.println("7. Sair");
             System.out.print("Opção: ");
 
             try {
@@ -158,6 +168,9 @@ public class Livraria {
                         listarAutoresVivosEmAno(ano);
                         break;
                     case 6:
+                        exibirQuantidadeDeLivrosPorIdioma();
+                        break;
+                    case 7:
                         System.out.println("Saindo...");
                         scanner.close();
                         return;
