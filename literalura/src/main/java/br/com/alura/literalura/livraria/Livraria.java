@@ -106,12 +106,20 @@ public class Livraria {
 
     private void exibirLivro(Livro livro) {
         System.out.println("Título: " + livro.getTitulo());
-        System.out.println("Autor: " + livro.getAutor().getName());
+
+        Autor autor = livro.getAutor();
+        if (autor != null) {
+            System.out.println("Autor: " + autor.getName());
+        } else {
+            System.out.println("Autor: Autor desconhecido");
+        }
+
         System.out.println("Idiomas: " + livro.getLanguages());
         System.out.println("Número de Downloads: " + livro.getDownloadCount());
         System.out.println("ID: " + livro.getId());
         System.out.println();
     }
+
 
     public void exibirQuantidadeDeLivrosPorIdioma() {
         Scanner scanner = new Scanner(System.in);
@@ -176,6 +184,17 @@ public class Livraria {
         }
     }
 
+    public void buscarAutorPorNome(String nome) {
+        List<Autor> autores = autorRepository.findByNameContainingIgnoreCase(nome);
+
+        if (autores.isEmpty()) {
+            System.out.println("Nenhum autor encontrado com o nome: " + nome);
+        } else {
+            System.out.println("Autores encontrados com o nome '" + nome + "':");
+            autores.forEach(autor -> System.out.println(autor));
+        }
+    }
+
     public void exibirMenu() {
         Scanner scanner = new Scanner(System.in);
         while (true) {
@@ -190,12 +209,13 @@ public class Livraria {
             System.out.println("7. Exibir estatísticas de downloads dos livros");
             System.out.println("8. Exibir estatísticas de anos de nascimento dos autores");
             System.out.println ("9.Top 10 livros mais baixados" );
-            System.out.println("10. Sair");
+            System.out.println ("10.Buscar autor por nome" );
+            System.out.println("11. Sair");
             System.out.print("Opção: ");
 
             try {
                 int opcao = scanner.nextInt();
-                scanner.nextLine(); // Consome a nova linha
+                scanner.nextLine();
 
                 switch (opcao) {
                     case 1:
@@ -231,8 +251,12 @@ public class Livraria {
                     case 9:
                         exibirTop10LivrosMaisBaixados();
                         break;
-
                     case 10:
+                        System.out.print("Digite o nome do autor: ");
+                        String nomeAutor = scanner.nextLine();
+                        buscarAutorPorNome(nomeAutor);
+                        break;
+                    case 11:
                         System.out.println("Saindo...");
                         scanner.close();
                         return;
