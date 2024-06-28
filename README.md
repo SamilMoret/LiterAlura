@@ -16,7 +16,7 @@ No emocionante desafio de programação LiterAlura, fui convidado a construir me
 ![Git](https://img.shields.io/badge/Git-F05032?style=for-the-badge&logo=git&logoColor=white) 
 ![Gutendex API](https://img.shields.io/badge/Gutendex%20API-21759B?style=for-the-badge) 
 ![Jackson](https://img.shields.io/badge/Jackson-2F71B8?style=for-the-badge&logo=jackson) 
-![Lombok](https://img.shields.io/badge/Lombok-FFA500?style=for-the-badge&logo=lombok)
+
 
 ## 📖 Funcionalidades
 
