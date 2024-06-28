@@ -18,6 +18,7 @@ import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
 import java.util.stream.Collectors;
+import java.util.DoubleSummaryStatistics;
 
 @Component
 public class Livraria {
@@ -95,8 +96,8 @@ public class Livraria {
 
     public void listarAutoresVivosEmAno(int ano) {
         List<Autor> autoresVivos = autorRepository.findAll().stream()
-                .filter(autor -> autor.getBirthYear() != null && autor.getBirthYear() <= ano
-                        && (autor.getDeathYear() == null || autor.getDeathYear() >= ano))
+                .filter(autor -> autor.getBirthYear() != null && autor.getBirthYear() <= ano &&
+                        (autor.getDeathYear() == null || autor.getDeathYear() >= ano))
                 .collect(Collectors.toList());
         if (autoresVivos.isEmpty()) {
             System.out.println("Nenhum autor encontrado vivo no ano: " + ano);
@@ -107,15 +108,9 @@ public class Livraria {
         }
     }
 
-
     private void exibirLivro(Livro livro) {
         System.out.println("Título: " + livro.getTitulo());
-        Autor autor = livro.getAutor();
-        if (autor != null) {
-            System.out.println("Autor: " + autor.getName());
-        } else {
-            System.out.println("Autor: N/A");
-        }
+        System.out.println("Autor: " + livro.getAutor().getName());
         System.out.println("Idiomas: " + livro.getLanguages());
         System.out.println("Número de Downloads: " + livro.getDownloadCount());
         System.out.println("ID: " + livro.getId());
@@ -124,10 +119,47 @@ public class Livraria {
 
     public void exibirQuantidadeDeLivrosPorIdioma() {
         Scanner scanner = new Scanner(System.in);
-        System.out.println("Digite o idioma (en, pt, es, fr): ");
+        System.out.println("Digite o idioma (pt, es, fr): ");
         String idioma = scanner.nextLine();
         long quantidade = livroRepository.countByLanguagesContains(idioma);
         System.out.println("Quantidade de livros em " + idioma + ": " + quantidade);
+    }
+
+    public void exibirEstatisticasDownloadsLivros() {
+        List<Livro> livros = livroRepository.findAll();
+
+        if (livros.isEmpty()) {
+            System.out.println("Nenhum livro encontrado no catálogo.");
+        } else {
+            DoubleSummaryStatistics stats = livros.stream()
+                    .collect(Collectors.summarizingDouble(Livro::getDownloadCount));
+
+            System.out.println("Estatísticas de Downloads dos Livros:");
+            System.out.println("Número Total de Livros: " + stats.getCount());
+            System.out.println("Soma dos Downloads: " + stats.getSum());
+            System.out.println("Média de Downloads: " + stats.getAverage());
+            System.out.println("Número Mínimo de Downloads: " + stats.getMin());
+            System.out.println("Número Máximo de Downloads: " + stats.getMax());
+        }
+    }
+
+    public void exibirEstatisticasNascimentoAutores() {
+        List<Autor> autores = autorRepository.findAll();
+
+        if (autores.isEmpty()) {
+            System.out.println("Nenhum autor encontrado no catálogo.");
+        } else {
+            DoubleSummaryStatistics stats = autores.stream()
+                    .filter(autor -> autor.getBirthYear() != null && autor.getBirthYear() >= 0)
+                    .collect(Collectors.summarizingDouble(autor -> autor.getBirthYear()));
+
+            System.out.println("Estatísticas de Anos de Nascimento dos Autores:");
+            System.out.println("Número Total de Autores: " + stats.getCount());
+            System.out.println("Soma dos Anos de Nascimento: " + Math.round(stats.getSum()));
+            System.out.println("Média dos Anos de Nascimento: " + Math.round(stats.getAverage()));
+            System.out.println("Ano Mínimo de Nascimento: " + (int) stats.getMin());
+            System.out.println("Ano Máximo de Nascimento: " + (int) stats.getMax());
+        }
     }
 
     public void exibirMenu() {
@@ -141,7 +173,9 @@ public class Livraria {
             System.out.println("4. Listar todos os autores");
             System.out.println("5. Listar autores vivos em determinado ano");
             System.out.println("6. Exibir quantidade de livros por idioma");
-            System.out.println("7. Sair");
+            System.out.println("7. Exibir estatísticas de downloads dos livros");
+            System.out.println("8. Exibir estatísticas de anos de nascimento dos autores");
+            System.out.println("9. Sair");
             System.out.print("Opção: ");
 
             try {
@@ -174,6 +208,12 @@ public class Livraria {
                         exibirQuantidadeDeLivrosPorIdioma();
                         break;
                     case 7:
+                        exibirEstatisticasDownloadsLivros();
+                        break;
+                    case 8:
+                        exibirEstatisticasNascimentoAutores();
+                        break;
+                    case 9:
                         System.out.println("Saindo...");
                         scanner.close();
                         return;
@@ -182,7 +222,7 @@ public class Livraria {
                 }
             } catch (InputMismatchException e) {
                 System.out.println("Entrada inválida! Por favor, insira um número.");
-                scanner.next();
+                scanner.next(); // Limpa a entrada inválida
             }
         }
     }
