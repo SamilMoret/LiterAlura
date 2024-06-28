@@ -25,14 +25,14 @@ public class Livro {
     @JsonProperty("languages")
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "livro_languages", joinColumns = @JoinColumn(name = "livro_id"))
-    @Column(name = "languages") // Use the existing column "languages"
+    @Column(name = "languages")
     private Set<String> languages;
 
     @JsonProperty("download_count")
     private Integer downloadCount;
 
     @JsonProperty("translators")
-    @Transient // Para ignorar no mapeamento JPA, se não for necessário persistir
+    @Transient
     private List<Autor> translators;
 
     @ManyToOne

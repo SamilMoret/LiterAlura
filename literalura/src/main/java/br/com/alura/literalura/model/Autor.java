@@ -1,11 +1,8 @@
 package br.com.alura.literalura.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-
+import jakarta.persistence.*;
+import java.util.Objects;
 
 @Entity
 public class Autor {
@@ -14,7 +11,6 @@ public class Autor {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @JsonProperty("name")
     private String name;
 
     @JsonProperty("birth_year")
@@ -63,5 +59,20 @@ public class Autor {
                 ", birthYear=" + birthYear +
                 ", deathYear=" + deathYear +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Autor autor = (Autor) o;
+        return Objects.equals(name, autor.name) &&
+                Objects.equals(birthYear, autor.birthYear) &&
+                Objects.equals(deathYear, autor.deathYear);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, birthYear, deathYear);
     }
 }

@@ -19,7 +19,6 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.stream.Collectors;
 
-
 @Component
 public class Livraria {
     private List<Livro> catalogo = new ArrayList<>();
@@ -63,13 +62,11 @@ public class Livraria {
             System.out.println("Nenhum livro encontrado no catálogo.");
         } else {
             for (Livro livro : livros) {
-                // Força o carregamento dos idiomas antes de exibir o livro
                 livro.getLanguages().size();
                 exibirLivro(livro);
             }
         }
     }
-
 
     public void listarLivrosPorIdioma(String idioma) {
         List<Livro> livrosFiltrados = livroRepository.findAll().stream()
@@ -85,7 +82,6 @@ public class Livraria {
         }
     }
 
-
     public void listarTodosAutores() {
         List<Autor> autores = autorRepository.findAll();
         if (autores.isEmpty()) {
@@ -99,7 +95,8 @@ public class Livraria {
 
     public void listarAutoresVivosEmAno(int ano) {
         List<Autor> autoresVivos = autorRepository.findAll().stream()
-                .filter(autor -> autor.getBirthYear() <= ano && (autor.getDeathYear() == null || autor.getDeathYear() >= ano))
+                .filter(autor -> autor.getBirthYear() != null && autor.getBirthYear() <= ano
+                        && (autor.getDeathYear() == null || autor.getDeathYear() >= ano))
                 .collect(Collectors.toList());
         if (autoresVivos.isEmpty()) {
             System.out.println("Nenhum autor encontrado vivo no ano: " + ano);
@@ -110,9 +107,15 @@ public class Livraria {
         }
     }
 
+
     private void exibirLivro(Livro livro) {
         System.out.println("Título: " + livro.getTitulo());
-        System.out.println("Autor: " + livro.getAutor().getName());
+        Autor autor = livro.getAutor();
+        if (autor != null) {
+            System.out.println("Autor: " + autor.getName());
+        } else {
+            System.out.println("Autor: N/A");
+        }
         System.out.println("Idiomas: " + livro.getLanguages());
         System.out.println("Número de Downloads: " + livro.getDownloadCount());
         System.out.println("ID: " + livro.getId());
@@ -121,7 +124,7 @@ public class Livraria {
 
     public void exibirQuantidadeDeLivrosPorIdioma() {
         Scanner scanner = new Scanner(System.in);
-        System.out.println("Digite o idioma (pt, es, fr): ");
+        System.out.println("Digite o idioma (en, pt, es, fr): ");
         String idioma = scanner.nextLine();
         long quantidade = livroRepository.countByLanguagesContains(idioma);
         System.out.println("Quantidade de livros em " + idioma + ": " + quantidade);
@@ -179,7 +182,7 @@ public class Livraria {
                 }
             } catch (InputMismatchException e) {
                 System.out.println("Entrada inválida! Por favor, insira um número.");
-                scanner.next(); // Limpa a entrada inválida
+                scanner.next();
             }
         }
     }
