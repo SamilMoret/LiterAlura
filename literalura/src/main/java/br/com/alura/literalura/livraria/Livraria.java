@@ -204,7 +204,7 @@ public class Livraria {
             System.out.println("1. Buscar livro por título");
             System.out.println("2. Listar todos os livros");
             System.out.println("3. Listar livros por idioma");
-            System.out.println("4. Listar todos os autores");
+            System.out.println("4. Listar todos os autores");w
             System.out.println("5. Listar autores vivos em determinado ano");
             System.out.println("6. Exibir quantidade de livros por idioma");
             System.out.println("7. Exibir estatísticas de downloads dos livros");
