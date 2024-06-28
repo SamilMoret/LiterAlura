@@ -13,12 +13,8 @@ import java.io.IOException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.InputMismatchException;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 import java.util.stream.Collectors;
-import java.util.DoubleSummaryStatistics;
 
 @Component
 public class Livraria {
@@ -162,6 +158,24 @@ public class Livraria {
         }
     }
 
+    public void exibirTop10LivrosMaisBaixados() {
+        List<Livro> livros = livroRepository.findAll();
+
+        if (livros.isEmpty()) {
+            System.out.println("Nenhum livro encontrado no catálogo.");
+        } else {
+            System.out.println("Top 10 Livros Mais Baixados:");
+            livros.stream()
+                    .sorted(Comparator.comparingInt(Livro::getDownloadCount).reversed())
+                    .limit(10)
+                    .forEach(livro -> {
+                        System.out.println("Título: " + livro.getTitulo());
+                        System.out.println("Número de Downloads: " + livro.getDownloadCount());
+                        System.out.println();
+                    });
+        }
+    }
+
     public void exibirMenu() {
         Scanner scanner = new Scanner(System.in);
         while (true) {
@@ -175,7 +189,8 @@ public class Livraria {
             System.out.println("6. Exibir quantidade de livros por idioma");
             System.out.println("7. Exibir estatísticas de downloads dos livros");
             System.out.println("8. Exibir estatísticas de anos de nascimento dos autores");
-            System.out.println("9. Sair");
+            System.out.println ("9.Top 10 livros mais baixados" );
+            System.out.println("10. Sair");
             System.out.print("Opção: ");
 
             try {
@@ -214,6 +229,10 @@ public class Livraria {
                         exibirEstatisticasNascimentoAutores();
                         break;
                     case 9:
+                        exibirTop10LivrosMaisBaixados();
+                        break;
+
+                    case 10:
                         System.out.println("Saindo...");
                         scanner.close();
                         return;
