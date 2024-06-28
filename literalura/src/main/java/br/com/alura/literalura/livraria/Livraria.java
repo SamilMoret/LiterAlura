@@ -194,11 +194,12 @@ public class Livraria {
             autores.forEach(autor -> System.out.println(autor));
         }
     }
-
     public void exibirMenu() {
         Scanner scanner = new Scanner(System.in);
         while (true) {
-            System.out.println("Bem-vindo à LiterAlura!");
+            System.out.println("\n====================================================");
+            System.out.println("             BEM-VINDO À LITERALURA!");
+            System.out.println("====================================================\n");
             System.out.println("Selecione uma opção:");
             System.out.println("1. Buscar livro por título");
             System.out.println("2. Listar todos os livros");
@@ -208,8 +209,8 @@ public class Livraria {
             System.out.println("6. Exibir quantidade de livros por idioma");
             System.out.println("7. Exibir estatísticas de downloads dos livros");
             System.out.println("8. Exibir estatísticas de anos de nascimento dos autores");
-            System.out.println ("9.Top 10 livros mais baixados" );
-            System.out.println ("10.Buscar autor por nome" );
+            System.out.println("9. Top 10 livros mais baixados");
+            System.out.println("10. Buscar autor por nome");
             System.out.println("11. Sair");
             System.out.print("Opção: ");
 
@@ -217,6 +218,7 @@ public class Livraria {
                 int opcao = scanner.nextInt();
                 scanner.nextLine();
 
+                System.out.println("\n===============================================================================");
                 switch (opcao) {
                     case 1:
                         System.out.print("Digite o título do livro: ");
@@ -265,8 +267,9 @@ public class Livraria {
                 }
             } catch (InputMismatchException e) {
                 System.out.println("Entrada inválida! Por favor, insira um número.");
-                scanner.next(); // Limpa a entrada inválida
+                scanner.next();
             }
         }
     }
+
 }
