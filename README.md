@@ -2,6 +2,10 @@
 
 No emocionante desafio de programação LiterAlura, fui convidado a construir meu próprio catálogo de livros interativo. Utilizando Java, Spring Boot, MySQL e a API Gutendex, o projeto oferece uma experiência completa de consumo de API, manipulação de dados JSON e persistência em banco de dados.
 
+
+![Demonstração do Catálogo ](https://github.com/SamilMoret/literalura/blob/main/Anima%C3%A7%C3%A3o_Literalura.gif)
+
+
 ## ℹ️ Sobre o Projeto
 
  Foi desenvolvido um catálogo de livros que permite aos usuários interagir via console. As funcionalidades incluem buscar livros por título diretamente na API, listar livros e autores registrados no banco de dados, listar autores vivos em um determinado ano e listar livros em um idioma específico.
